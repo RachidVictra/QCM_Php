@@ -149,15 +149,17 @@
 	<div></div>
 	<p id="main" style="margin-top:75px; padding:20px; text-align:left">	
 <?php 
-	include_once 'ConnexionDB.php';
+	include 'ConnexionDB.php';
 		
 	$qcm = mysql_query('SELECT * FROM Questions');
 	$nbQuestion =mysql_fetch_array(mysql_query('SELECT count(*) as NB FROM Questions'));
 	echo '<script type="text/javascript"> var nbQuestion = '.$nbQuestion["NB"].';</script>';
 	$q= 0;
+	$contenu = '';
+	$point = 0;
 	$contenu .= '<ul id="QCM" style="top:50px; text-align:left">';
 	while($data = mysql_fetch_array($qcm)){
-		$point = mysql_fetch_array(mysql_query('SELECT SUM(Note) as Note FROM Reponse WHERE Id_Question = '. $data['Id']));
+		$point =  $point + $data['Note'];
 		$q++;
 		$contenu .= '<li><h3> - '.$data['Questions'].'  ('.$q.'/'.$nbQuestion['NB'].')   --  '.$point['Note'].' Point(s)  --</h3>';
 		$reponds =  mysql_query('SELECT * FROM Reponse WHERE Id_Question = ' . $data['Id']);

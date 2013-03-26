@@ -6,9 +6,9 @@ if($_SESSION['newTry'] == 1){
 	$rps = $_POST['data'];
 	$time = $_POST['time'];
 	$TabRps = explode(';', $rps);
-	include_once 'ConnexionDB.php';
-	$nbQuestion =mysql_fetch_array(mysql_query('SELECT count(*) as NB FROM Questions'));
-	$sumPoint = mysql_fetch_array(mysql_query('SELECT SUM(Note) as Sum FROM Reponse'));
+	mysql_connect("localhost", "root", "") or die ("<p id='Erreur'>connection impossible au serveur</p>");
+	mysql_select_db("QCM_DB") or die("<p id='Erreur'> Base de Données inconnue </p>");
+	$dataQuestion =mysql_fetch_array(mysql_query('SELECT count(*) as NB, SUM(Note) as Sum FROM Questions'));
 	//$rps = mysql_fetch_array(mysql_query('SELECT * FROM Reponse'));
 		
 	$Qcm = mysql_query('SELECT * FROM Questions');
@@ -16,7 +16,8 @@ if($_SESSION['newTry'] == 1){
 	$note = 0;
 	$cR = 0;
 	$fR = 0;
-	$nbQ = $nbQuestion['NB'];
+	$nbQ = $dataQuestion['NB'];
+	$contenu = '';
 	while($data = mysql_fetch_array($Qcm)){
 		$q++;
 		$contenu .= '<h3 style="text-align:left;"> - '.$data['Questions'].'  ('.$q.'/'.$nbQ.')</h3>';
@@ -32,7 +33,7 @@ if($_SESSION['newTry'] == 1){
 			}
 			if($test==1 && $dataR['Correct']==1){
 				$contenu .= '<li style="text-align:left; color:#090; font-weight: bold">'.$dataR['reponse'].'</li>'; 
-				$note = $note + $dataR['Note']; $cR++;
+				$note = $note + $data['Note']; $cR++;
 			}
 			elseif($test==1 && $dataR['Correct']==0)
 				{$contenu .= '<li style="text-align:left; color:#F00; font-weight: bold">'.$dataR['reponse'].'</li>'; $noR = 0; $fR++;}
@@ -45,7 +46,7 @@ if($_SESSION['newTry'] == 1){
 		$contenu .='</ul>';
 	}
 	
-	$resultat= $note.'/'.$sumPoint['Sum'];
+	$resultat= $note.'/'.$dataQuestion['Sum'];
 	mysql_query('INSERT INTO archive(Note, Score, Id_User, DateQcm) VALUES('.$note.', "'.$time.'", '.$_SESSION['id_User'].', NOW())');
 	
 	$rst = '<fieldset id="result"><legend> Résultat du QCM :</legend><h2>Résultat du QCM : </h2>
