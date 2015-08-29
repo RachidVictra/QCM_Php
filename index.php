@@ -21,6 +21,7 @@
 		var sc = 0;
 		var tm = '';
 		var mn = Tmn;
+		//Compteur
 		function Go(){
 			setTimeout(function(){
 				sc--;
@@ -48,6 +49,8 @@
 		var TabDiv = new Array();
 		var i = 0;
 		var nQ = $('div').length;
+		//Cette partie de code permet de cacher ou apparaitre les boutton de slider next et previews 
+		//selon la question, si elle est la 1° question button previews sera cacher, si elle la dernière next sera cacher
 		$('#QCM').each(function(index){
 			TabDiv[index] = '#'+$(this).attr('id');
 			if(index != 0){
@@ -72,23 +75,25 @@
     		});*/
   		});
 		
-		
+		//Lorsqu 'on clique sur le button résultat avant que le temps s'achever.
 		$('#resultat').click(function(){
 			resultatQCM();
 		});
 		
+		//cette function permet de récupérer les reponses séléctées et les mettre dans un tableau, puis les envois
+		// au reponse.php qui les traite et retourne la réponses et envoi un émail. 
 		function resultatQCM(){
 			$('#chrono').hide();
 			var tab = [];
 			$("input:checked[name='check[]']").each(function(){
 				tab.push($(this).attr('id'));
 			});
-			$('div').hide();//Cacher les Questions et Afficher le r�sultat.
+			$('div').hide();//Cacher les Questions et Afficher le résultat.
 			var rps = '';
 			for(i=0; i<tab.length; i++)
 				rps += tab[i];
 				
-			/*R�cup�rer le temps �coul�*/
+			/*Récupérer le temps écoulé*/
 			if(sc>0){sc = 60 - sc; mn = 3 -(mn+1);}
 			else mn = 3 - mn;				
 			
@@ -105,8 +110,11 @@
 				}
 			});
 		}
+		
+		
 		$('#next').click(function(){alert('ok');});
 		var curentQuestion = 0;
+		//Function de slider
 		$('#QCM').anythingSlider({
 				theme           : 'metallic',
 				easing          : 'easeInOutBack',
@@ -143,7 +151,7 @@
 	<h1 style="color:#d9d9d9">QCM - <?php echo $_SESSION['utilisateur']; ?></h1>
 	<ul class="header-content">
 		<li><a href="">Nouvelle Essaie</a></li>
-		<li><a id="resultat" href="javascript:">R�sultat</a></li>
+		<li><a id="resultat" href="javascript:">Résultat</a></li>
 		<li><a href='Login.php'>Deconnexion</a></li>		
 	</ul>
 	<div></div>
